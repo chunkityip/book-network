@@ -6,15 +6,29 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
+      # Set to update so Hibernate will update the schema automatically based on entity changes
       ddl-auto: update
+      #Not log the SQL statements
     show-sql: false
     properties:
       hibernate:
+        #For Better Readability
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSLDialect
   mail:
+    #host and port define the SMTP server
     host: localhost
     port: 1025
     username: ali
     password: ali
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+          #Enables SMTP authentication
+        auth: true
+        starttls:
+          enable: true
+        connectiontimout: 5000
+        timeout: 3000
