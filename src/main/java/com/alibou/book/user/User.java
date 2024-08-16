@@ -3,6 +3,7 @@ package com.alibou.book.user;
 import com.alibou.book.role.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -25,13 +26,15 @@ import static jakarta.persistence.FetchType.EAGER;
  * process whenever an entity undergoes lifecycle events such as persist, update
  * or remove
  */
+
+
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
+@SuperBuilder
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "user")
+@Table(name = "_user")
 @EntityListeners(AuditingEntityListener.class)
 public class User implements UserDetails, Principal {
 
@@ -46,24 +49,20 @@ public class User implements UserDetails, Principal {
     private String password;
     private boolean accountLocked;
     private boolean enabled;
+    @ManyToMany(fetch = EAGER)
+    private List<Role> roles;
+    //@OneToMany(mappedBy = "owner")
+    //private List<Book> books;
+    //@OneToMany(mappedBy = "user")
+    //private List<BookTransactionHistory> histories;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
 
-    // Capturing date and time when an entity was last updated
     @LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime lastModifiedDate;
-
-    @ManyToMany(fetch = EAGER)
-    private List<Role> roles;
-
-
-    @Override
-    public String getName() {
-        return "";
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -75,35 +74,44 @@ public class User implements UserDetails, Principal {
 
     @Override
     public String getPassword() {
-        return "";
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return email;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return !accountLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return enabled;
     }
 
     public String fullName() {
-        return firstname + lastname;
+        return getFirstname() + " " + getLastname();
+    }
+
+    @Override
+    public String getName() {
+        return email;
+    }
+
+    public String getFullName() {
+        return firstname + " " + lastname;
     }
 }
