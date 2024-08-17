@@ -8,7 +8,7 @@ services:
       PGDATA: /var/lib/postgresql/data
       POSTGRES_DB: book_social_network
     volumes:
-      - postgres:/data/postgres_personal
+      - postgres:/data/postgres
     ports:
       - 5432:5432
     networks:
@@ -20,11 +20,9 @@ services:
     ports:
       - 1080:1080
       - 1025:1025
-
 networks:
   spring-demo:
     driver: bridge
-
 
 volumes:
   postgres:
